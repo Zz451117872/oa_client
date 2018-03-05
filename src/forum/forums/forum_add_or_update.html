@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>版块添加 或 修改</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+			var forumId = $("#forumId").val();
+			
+			if(forumId == null || forumId == "")
+			{
+				$("#is_update").hide();
+			}else{
+				$("#is_update").show();
+			}
+			
+			$("#forum_add_or_update").click(addAndUpdateForum);
+		});
+		
+		function addAndUpdateForum()
+		{
+			
+			var options = {
+						headers:{
+							"Access-Control-Allow-Credentials":"true"
+						},
+						xhrFields:{
+							withCredentials:true
+						},
+						url:url_prefix+"forum/add_or_update_forum.do",
+						dataType:"json",
+						success:function(result){
+							if(result.status)
+							{		
+								$("#information").load("/OA_client/src/forum/forums/forum_list.html");			
+							}else{
+								alert(result.msg);
+							}
+						}
+					}
+			$("#add_or_update_forum_form").ajaxForm(options);
+		}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>版块添加 或 修改</h1>
+		<hr />
+		
+		<form id="add_or_update_forum_form" method="post" >
+			<p id="is_update">版块id：<input id="forumId" type="text" name="id" value="" /></p>
+			版块名：<input id="forumName" type="text" name="forumName" /><br />
+			描述：<input id="description" type="text" name="description" /><br />
+			排序：<input id="sorts" type="text" name="sorts" /><br />
+			<input id="forum_add_or_update" type="submit" value="submit" />
+		</form>
+	</body>
+</html>

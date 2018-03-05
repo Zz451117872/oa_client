@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>主题添加 或 修改</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+	
+				var topicId = $("#topicId").val();
+				if(topicId != null && topicId != "")
+				{
+					loadAllTopicStatus();
+					$(".is_update").show();
+					$("#add_or_update_topic_form").attr("action",url_prefix+"topic/update_topic.do");
+					$("#add_or_update_topic").click(addOrUpdateTopic);
+				}else{
+					loadAllForum();
+					$(".is_update").hide();
+					$("#add_or_update_topic_form").attr("action",url_prefix+"topic/add_topic.do");
+					$("#add_or_update_topic").click(addOrUpdateTopic);
+				}
+			});
+			
+			function loadAllTopicStatus()
+			{
+					$.ajax({
+						url:url_prefix+"topic/all_topic_status.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var topicStatuss = result.data;
+									if(topicStatuss != null)
+									{
+										var currentStatus = $("#status").val();
+										for(var i=0; i<topicStatuss.length; i++)
+										{
+											var topicStatus = topicStatuss[i];
+											if(currentStatus == topicStatus)
+											{
+												$("#topic_status").append($("<option selected='selected' value='"+topicStatus+"'>"+topicStatus+"</option>"));
+											}else{
+												$("#topic_status").append($("<option value='"+topicStatus+"'>"+topicStatus+"</option>"));
+											}
+										}
+									}				
+								}else{
+									alert(result.msg);
+								}
+							}
+						})
+			}
+			
+			function loadAllForum()
+			{
+					$.ajax({
+						url:url_prefix+"forum/all_forum.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"pageNum":0,
+								"pageSize":0
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var forums = result.data.list;
+									if(forums != null)
+									{
+										for(var i=0; i<forums.length; i++)
+										{
+											$("#forumId").append("<option value='"+forums[i].id+"'>"+forums[i].forumName+"</option>");
+										}
+									}				
+								}else{
+									alert(result.msg);
+								}
+							}
+						})
+			}
+			
+			function addOrUpdateTopic()
+			{	
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+						
+							dataType:"json",
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/forum/topic/topic_list.html");		
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#add_or_update_topic_form").ajaxForm(options);
+			}
+
+		</script>
+		
+	</head>
+	<body>
+		<hr />
+		<h1>主题添加 或 修改</h1>
+		<input id="status" type="hidden" />
+		<hr />
+		
+		<form id="add_or_update_topic_form" method="post" action=""> 
+			<p class="is_update">主键：<input id="topicId" name="topicId" type="text" value="" /><br></p>
+			标题：<input id="title" type="text" name="title" /><br />
+			内容：<input id="content" type="text" name="content" /><br />
+			版块：<select id="forumId" name="forumId">
+				
+			</select><br />
+			<p class="is_update">状态：<select name="statusName" id="topic_status">
+										
+									</select><br /></p>
+			<input id="add_or_update_topic" type="submit" value="submit" /><br />
+		</form>
+	</body>
+</html>

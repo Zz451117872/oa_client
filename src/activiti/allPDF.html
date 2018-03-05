@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>流程定义管理</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<link rel="stylesheet" href="/OA_client/css/module/flow_chart.css" />
+		<script type="text/javascript" src="/OA_client/js/module/common.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/activiti/allPDF.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/flow_chart.js" ></script>		
+	</head>
+	<body>
+		
+		<hr />
+		<h1>流程定义管理</h1>
+		<hr />
+		<button id="deployWorkflow">部署流程</button>&nbsp;&nbsp;
+		<button id="deployAllWorkflow">部署所有流程</button>&nbsp;&nbsp;
+		<button id="deleteAllWorkflow">删除所有流程</button>&nbsp;&nbsp;
+		<button id="initAllUserTask">初始化所有流程定义</button>
+		<hr />
+		<table id="pdf_list" border="1px solid bisque;">
+			<tr>
+				<td>id</td>
+				<td>name</td>
+				<td>key</td>
+				<td>version</td>
+				<td>deploymentId</td>		
+				<td>deploymentTime</td>			
+				<td>suspended</td>
+				<td>operation</td>				
+			</tr>
+		</table>
+		
+		<iframe id="pageIframeId" name="pageIframe" src="/OA_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
+		
+		<div id="fade" class="black_overlay">  
+		</div>  
+		
+		<div id="MyDiv" class="white_content">  
+  		<div style="text-align: right; cursor: default; height: 40px;">  
+   			<span style="font-size: 16px;" onclick="CloseDiv('MyDiv','fade')">关闭</span>  
+  		</div>  
+  				<img id="resource" src="" />
+ 		</div> 
+	</body>
+</html>

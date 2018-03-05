@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>论坛-版块</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/common.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+			loadAllForum(1,3);
+			
+			$("#add_forum").on("click",function(){		
+				$("#information").load("/OA_client/src/forum/forums/forum_add_or_update.html");
+			});
+			
+			$("#add_topic").on("click",function(){		
+				$("#information").load("/OA_client/src/forum/topic/topic_add_or_update.html");
+			})
+		});
+		
+		function loadAllForum(pageNum,pageSize)
+		{
+				$.ajax({
+					url:url_prefix+"forum/all_forum.do",
+						headers:{
+							"Access-Control-Allow-Credentials":"true"
+						},
+						type:"POST",
+						xhrFields:{
+							withCredentials:true
+						},
+						dataType:"json",
+						data:{
+							"pageNum":pageNum,
+							"pageSize":pageSize
+						},
+						success:function(result){
+							if(result.status)
+							{		
+								var forums = result.data.list;
+								if(forums != null)
+								{
+									fillForumsToPage(forums);
+									
+									updateCommonData(result,loadAllForum);
+								}				
+							}else{
+								alert(result.msg);
+							}
+						}
+					})
+		}
+		
+		
+		function fillForumsToPage(forums)
+		{
+			$(".new_add").remove();
+			for(var i=0; i<forums.length; i++)
+			{
+				var forum = forums[i];
+				var div = fillForumToPage(forum);
+				$("#fourms").append(div);
+			}
+		}
+		
+		function fillForumToPage(forum)
+		{
+			var div = $("<div class='new_add' id='"+forum.id+"' style='border: 1px solid black; padding: 10px;'></div>")
+				
+			var forumName = $("<p>版块：<a href='#'>"+forum.forumName+"</a></p>");
+			 
+			 //绑定 按版块名查看版块详细 事件
+			$(forumName).on("click",function(){
+			 	$("#information").load("/OA_client/src/forum/forums/forum.html",function(){
+			 		$("#forumId").val(forum.id);
+			 		$("#forumName").text(forum.forumName);
+			 		$("#description").text(forum.description);
+			 		$("#topCount").text(forum.topCount);
+			 		$("#replyCount").text(forum.replyCount);
+			 		$("#createTime").text(forum.createTime);
+			 		$("#lastTopic").text(forum.lastTopicName);
+			 	});	 	
+			 });
+			 div.append(forumName);
+			 
+			 var lastTopic;
+			 if(forum.lastTopicName == null)
+			 {
+			 	lastTopic = $("<p>最后主题：<span>无</span></p>")
+			 }else{
+			 lastTopic = $("<p>最后主题：<a href='#'>"+forum.lastTopicName+"</a></p>");	 
+			 //绑定 查看该版块最后回复 事件
+			 $(lastTopic).on("click",function(){
+				 	$("#information").load("/OA_client/src/forum/topic/topic.html",function(){
+				 		$("#topicId").val(forum.lastTopic);
+				 		$("#forumName").text(forum.forumName);
+				 	});	 	
+			 	});
+			 }
+			 div.append(lastTopic);
+			 
+			 p = $("<p>主题数："+forum.topCount+"</p>");
+			 div.append(p);
+			 
+			 p = $("<p>回复数："+forum.replyCount+"</p>");
+			 div.append(p);
+			 
+			 p = $("<p>描述："+forum.description+"</p>");
+			 div.append(p);
+			 
+			 p = $("<p></p>");
+			 var update = $("<button>修改 &nbsp;&nbsp;</button>");
+			 var deletes = $("<button>删除 &nbsp;&nbsp;</button>");
+			 
+			 $(update).on("click",function(){
+			 	$("#information").load("/OA_client/src/forum/forums/forum_add_or_update.html",function(){
+			 		$("#forumId").val(forum.id);
+			 		$("#forumName").val(forum.forumName);
+			 		$("#description").val(forum.description);
+			 		$("#sorts").val(forum.sorts);
+			 	});
+			 });
+			 
+			 $(deletes).on("click",function(){
+			 	deleteForum(forum.id);
+			 });
+			 
+			 p.append(update).append(deletes);
+			 
+			 div.append(p)
+			return div;
+		}
+		
+		
+		function deleteForum(forumId)
+		{
+			$.ajax({
+					url:url_prefix+"forum/delete_forum.do",
+						headers:{
+							"Access-Control-Allow-Credentials":"true"
+						},
+						type:"POST",
+						xhrFields:{
+							withCredentials:true
+						},
+						dataType:"json",
+						data:{
+							"forumId":forumId
+						},
+						success:function(result){
+							if(result.status)
+							{		
+								$("#information").load("/OA_client/src/forum/forums/forum_list.html");			
+							}else{
+								alert(result.msg);
+							}
+						},
+						error:function(){
+							alert("xxx");
+						}
+					})
+		}
+
+		</script>
+		
+	</head>
+	<body>
+		<hr />
+		<h1>版块列表管理</h1>
+		<hr />
+		<button id="add_forum">新增版块</button>&nbsp;&nbsp;&nbsp;
+		<button id="add_topic">我要发贴</button>
+		<hr />
+		<div id="fourms" >
+			
+		</div>
+		<iframe id="pageIframeId" name="pageIframe" src="/OA_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
+	</body>
+</html>

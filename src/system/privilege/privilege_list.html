@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>权限信息页面</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+	
+				var parentId = $("#parentId").val();
+				if(parentId != null && parentId != "")
+				{
+					getChildPrivilege(parentId);
+				}else{
+					loadTopPrivileges();
+				}
+				
+				$("#add_privilege").on("click",function(){
+					$("#information").load("/OA_client/src/system/privilege/privilege_add_or_update.html");
+				});
+			});
+			
+			function loadTopPrivileges()
+			{
+				$.ajax({
+						url:url_prefix+"privilege/get_top_privilege.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var privileges = result.data;
+				
+									if(privileges != null)
+									{
+										fillPrivilegesToPage(privileges);												
+									}				
+								}else{
+									alert(result.msg);
+								}
+							}
+						})
+			}
+			
+			
+			function getChildPrivilege(parentId)
+			{
+					$.ajax({
+						url:url_prefix+"privilege/get_child.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"parentId":parentId					
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var privileges = result.data;
+				
+									if(privileges != null)
+									{
+										fillPrivilegesToPage(privileges);														
+									}				
+								}else{
+									alert(result.msg);
+								}
+							}
+						})
+			}
+			
+			
+			function fillPrivilegesToPage(privileges)
+			{
+				$(".new_add").remove();
+				for(var i=0; i<privileges.length; i++)
+				{
+					var privilege = privileges[i];
+					var tr = fillPrivilegeToPage(privilege);
+					$("#privilege_table").append(tr);
+				}
+			}
+			
+			function fillPrivilegeToPage(privilege)
+			{
+				var tr = $("<tr class='new_add'></tr>");
+				var td = $("<td>"+privilege.id+"</td>");
+				tr.append(td);
+				var privilegeName = $("<td><a href='#'>"+privilege.privilegeName+"</a></td>");
+				
+				//绑定 查询子权限 事件
+				$(privilegeName).on("click",function(){
+					$("#information").load("/OA_client/src/system/privilege/privilege_list.html",function(){
+						$("#parentId").val(privilege.id);
+					});
+				});
+				
+				tr.append(privilegeName);
+				td = $("<td>"+privilege.url+"</td>");
+				tr.append(td);
+				td = $("<td>"+privilege.parentName+"</td>");
+				tr.append(td);
+				td = $("<td>"+privilege.createTime+"</td>");
+				tr.append(td);
+				td = $("<td>"+privilege.updateTime+"</td>");
+				tr.append(td);
+			
+				td = $("<td></td>");
+				var update = $("<a href='#'>update &nbsp;&nbsp;</a>");
+				var deletes = $("<a href='#'>delete</a>");
+				
+				//绑定更新权限事件
+				$(update).on("click",function(){
+					$("#information").load("/OA_client/src/system/privilege/privilege_add_or_update.html",function(){
+						
+						$("#privilege_id").val(privilege.id);
+						$("#privilegeName").val(privilege.privilegeName);
+						$("#url").val(privilege.url);
+						$("#parent").val(privilege.parent);
+					})
+				});
+				
+				///绑定删除权限事件
+				$(deletes).on("click",function(){
+					deletePrivilege(privilege.id);
+				});
+				
+				td.append(update).append(deletes);
+				tr.append(td);
+				
+				return tr;
+			}
+			
+			function deletePrivilege(privilegeId)
+			{
+					$.ajax({
+						url:url_prefix+"privilege/delete_privilege.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"privilegeId":privilegeId
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/system/privilege/privilege_list.html");				
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>权限信息页面</h1>
+		<input id="parentId" type="hidden" name="parentId" value="" />
+		<hr />
+		<button id="add_privilege">添加</button><br />
+		<hr />
+		<table id="privilege_table" border="1px ">
+			<tr>
+				<td>id</td>
+				<td>权限名</td>
+				<td>url</td>
+				<td>父权限名</td>
+				<td>创建时间</td>
+				<td>更新时间</td>
+				<td>操作</td>
+			</tr>
+		</table>
+		
+	</body>
+</html>

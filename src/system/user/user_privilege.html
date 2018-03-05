@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>用户-权限</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var userId = $("#userId").val();
+				if(userId != null && userId != "")
+				{
+					loadPrivilegeByUser(userId);
+				}			
+			});
+			
+			
+			function loadPrivilegeByUser(userId)
+			{
+					$.ajax({
+						url:url_prefix+"user/all_privilege_by_user.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"userId":userId
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var privileges = result.data;
+									if(privileges != null)
+									{
+										fillPrivilegesToPage(privileges);
+									}				
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+			
+			function fillPrivilegesToPage(privileges)
+			{
+				for(var i=0; i<privileges.length; i++)
+				{
+					var privilege = privileges[i];
+					var li = fillPrivilegeToPage(privilege,1);
+					$("#privileges").append(li);		
+				}
+			}
+			
+			function fillPrivilegeToPage(privilege,len)
+			{
+				var li = $("<li></li>");
+				var blank = "";
+				for(var i=0; i<len; i++)
+				{
+					blank = blank +"&nbsp;&nbsp;";
+				}
+				li.append("<span>"+blank+"</span>");
+				
+				var input = $("<input  type='checkbox' class='privilege' value='"+privilege.id+"' />");
+				if(privilege.checked)
+				{
+					$(input).attr("checked",true);
+				}else{
+					$(input).attr("checked",false);
+				}
+				
+				var span = $("<span>"+privilege.privilegeName+"</span>");
+				li.append(input).append(span);
+				
+				var childs = privilege.childs;
+				if(childs != null && childs != "")
+				{
+					var ul = $("<ul></ul>");
+					for(var i=0; i<childs.length; i++)
+					{
+						var child = fillPrivilegeToPage(childs[i],len+2);
+						ul.append(child);
+					}
+					li.append(ul);
+				}
+				return li;
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>用户-权限</h1>
+		<hr />
+		用户||&nbsp;&nbsp;<span id="username">xxx</span>&nbsp;&nbsp;||权限分配：
+		<input id="userId" type="hidden" name="userId" value="" />
+		<hr />
+		<ul id="privileges">
+			
+		</ul>
+	</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>编辑用户任务</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#edit_user_task").click(doEditUserTask);
+			});
+			
+			function doEditUserTask()
+			{
+				var procdefkey = $("#procdefkey").val();
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+							url:url_prefix+"user_task/set_approver.do",
+							dataType:"json",				
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/activiti/user_task/user_task.html",function(){
+										$("#pdf_key").val(procdefkey);
+									});
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#edit_user_task_form").ajaxForm(options);
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>编辑用户任务</h1>
+		<hr />
+		<div>
+			
+			<form id="edit_user_task_form" method="post" >
+				userTaskId:<input id="userTaskId" name="id" readonly="readonly" /><br/>
+				流程定义key：<input id="procdefkey" name="procdefkey" readonly="readonly" /><br/>
+				任务定义key:<input id="taskdefkey" name="taskdefkey" readonly="readonly" /><br/>
+				任务名称：<input id="taskname" name="taskname" readonly="readonly" /><br/>
+				流程定义名称：<input id="procdefname" name="procdefname" readonly="readonly" /><br/>
+				
+				任务类型：<input type="text" id="tasktype" name="tasktype" /><br />
+				候选名称：<input type="text" id="candidateName" name="candidateName" /><br />
+				候选id：<input type="text" id="candidateIds" name="candidateIds" /><br />
+				
+				<input type="submit" id="edit_user_task" value="提交" />
+			</form>
+		</div>
+	</body>
+</html>

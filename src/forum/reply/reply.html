@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>回复信息</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var replyId = $("#replyId").val();
+				if(replyId != null && replyId != "")
+				{
+					loadReply(replyId);
+				}
+			});
+			
+			function loadReply(replyId)
+			{
+				$.ajax({
+						url:url_prefix+"reply/get_reply_by_id.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"replyId":replyId
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var reply = result.data;
+									if(reply != null)
+									{
+										$("#topicId").text(reply.topicTitle);
+										$("#title").text(reply.title);
+										$("#content").text(reply.content);
+										$("#replayTime").text(reply.replayTime);
+										$("#author").text(reply.authorName);
+										$("#status").text(reply.status);
+										$("#reply_replyId").val(reply.id);
+										$("#ip").text(reply.ip);													
+									}				
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>回复信息</h1>
+		<input id="replyId" type="hidden" name="replyId" />
+		<hr />
+		<div id="reply">
+			回复主题：<span id="topicId">xx</span><br />
+			回复标题：<span id="title">xx</span><br />
+			回复内容：<span id="content">xx</span><br />
+			回复时间：<span id="replayTime">xx</span><br />
+			回复人：<span id="author">xx</span><br />
+			状态：<span id="status">xx</span><br />
+			IP：<span id="ip">xx</span><br />
+		</div>
+	</body>
+</html>

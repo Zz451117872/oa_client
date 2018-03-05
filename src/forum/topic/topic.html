@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>主题</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/common.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var topicId = $("#topicId").val();
+				
+				if(topicId != null && topicId != "")
+				{
+					loadTopic(topicId);
+					loadReplysByTopic(1,3);
+				}
+				$("#replyPage").hide();	
+				
+				$("#lastReply").click(function(){
+					var lastReply = $(this).text();
+					$("#information").load("/OA_client/src/forum/reply/reply.html",function(){
+				 		$("#replyId").val(lastReply); 		
+				 	});
+				});
+				
+				$("#toReply").click(function(){
+					$("#replyPage").show();
+					var title = $("#title").text();
+				 	$("#replyPage").load("/OA_client/src/forum/reply/reply_add_or_update.html",function(){
+				 		
+				 		$("#reply_topicId").val(topicId);	 		
+				 		$("#reply_title").val("@@"+title); 
+				 	});	
+				});
+			});
+			
+			
+			function loadTopic(topicId)
+			{
+					$.ajax({
+						url:url_prefix+"topic/topic_id_or_name.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"topicId":topicId
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var topic = result.data;
+									if(topic != null)
+									{
+										fillTopicToPage(topic);													
+									}				
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+				
+			function fillTopicToPage(topic)
+			{
+				$("#forumName").text(topic.forumName);
+				$("#title").text(topic.title);
+				$("#content").text(topic.content);
+				$("#author").text(topic.authorName);
+				$("#createTime").text(topic.createTime);
+				$("#replyCount").text(topic.replyCount);
+				$("#lastReply").text(topic.lastReply);
+			}
+			
+			function loadReplysByTopic(pageNum,pageSize)
+			{
+				var topicId = $("#topicId").val();
+					$.ajax({
+						url:url_prefix+"reply/all_reply_by_topic.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"topicId":topicId,
+								"pageNum":pageNum,
+								"pageSize":pageSize
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var replys = result.data.list;
+									if(replys != null)
+									{
+										fillReplysToPage(replys);
+										
+										updateCommonData(result,loadReplysByTopic);
+									}				
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+			
+			function fillReplysToPage(replys)
+			{
+				if(replys != null)
+					{			
+						$(".new_add").remove();
+						for(var i=0; i<replys.length; i++)
+						{
+							var div = fillReplyToPage(replys[i]);
+							$("#replys").append(div);
+						}
+						
+				}
+			}
+			
+			
+			function fillReplyToPage(reply)
+			{
+				var div = $("<div class='new_add' id='"+reply.id+"' style='border: 1px solid black; padding: 10px;'></div>");
+				var p = $("<p>层主："+reply.authorName+"</p>");
+				div.append(p);
+				
+				p = $("<p>回复时间："+reply.replayTime+"</p>");
+				div.append(p);
+				
+				p = $("<p>回复IP："+reply.ip+"</p>");
+				div.append(p);
+				
+				p = $("<p>标题："+reply.title+"</p>");
+				div.append(p);
+				
+				p = $("<p>回复内容："+reply.content+"</p>");
+				div.append(p);
+				
+				p = $("<p>状态："+reply.status+"</p>");
+				div.append(p);
+				
+				return div;
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>主题信息</h1>
+		<input id="topicId" name="topicId" value="" type="hidden" />
+		<hr />
+		<div id="topicInfo">
+			版块: <span id="forumName"></span><br />
+			标题：<span id="title"></span><br />
+			内容：<span id="content"></span><br />
+			作者：<span id="author"></span><br />
+			开贴时间：<span id="createTime"></span><br />
+			回复数：<span id="replyCount"></span><br />
+			最后回复:<a id="lastReply" href="#"></a><br />
+			<button id="toReply">去回复</button>
+		</div>	
+		<div id="replyPage" style="border: 1px solid red; width: 400px; height: 150px;">
+			
+		</div>
+		<hr />		
+		<div id="replys">
+			
+		</div>
+		<iframe id="pageIframeId" name="pageIframe" src="/OA_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
+	</body>
+</html>

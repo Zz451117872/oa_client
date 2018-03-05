@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>权限添加 或 权限修改</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){	
+				loadAllParentPrivilege();
+				$("#privilege_add_or_update").click(addOrUpdatePrivilege);
+				initializePage();
+			});
+			
+			function loadAllParentPrivilege()
+			{
+					$.ajax({
+						url:url_prefix+"privilege/get_top_privilege.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var privileges = result.data;	
+									if(privileges != null)
+									{
+										fillPrivilegesToSelect(privileges);												
+									}				
+								}else{
+									alert(result.msg);
+								}
+							}
+						})
+			}
+			
+			function fillPrivilegesToSelect(privileges)
+			{
+				for(var i=0; i<privileges.length; i++)
+				{
+					var privilege = privileges[i];		
+					if(privilege.childs != null && privilege.childs.length > 0)
+					{
+						$("#parent").append("<option value='"+privilege.id+"'>"+privilege.privilegeName+"</option>");
+						fillPrivilegesToSelect(privilege.childs);
+					}
+				}
+			}
+			
+			function initializePage()
+			{
+				var id = $("#pvivilege_id").val();
+				if(id != null && id != "")
+				{
+					$("#is_update").show();		
+				}else{
+					$("#is_update").hide();
+				}
+			}
+			
+			function addOrUpdatePrivilege()
+			{
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+							url:url_prefix+"privilege/add_or_update_privilege.do",
+							dataType:"json",				
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("src/system/privilege/privilege_list.html");
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#add_or_update_privilege_form").ajaxForm(options);	
+			}
+		</script>
+	</head>
+	<body>
+		<br />
+		<h1>权限添加 或 权限修改</h1>
+		<br />
+		
+		<form id="add_or_update_privilege_form" method="post">
+			<p id="is_update">权限id：<input id="privilege_id" type="text" name="id" value="" /><br /></p>
+			权限名:<input id="privilegeName" type="text" name="privilegeName" /><br />
+			描述：<input id="url" type="text" name="url" /><br />	
+			父权限：<select id="parent" name="parent">
+				
+				</select><br />	
+				<input id="privilege_add_or_update" type="submit" value="submit" />
+		</form>
+	</body>
+</html>

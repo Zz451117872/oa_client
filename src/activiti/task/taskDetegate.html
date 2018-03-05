@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>任务委托</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" >
+			$(document).ready(function(){
+				loadMandator();
+				$("#detegateTask").click(doDetegateTask);
+			});
+			
+			function loadMandator()
+			{
+					$.ajax({
+						url:url_prefix+"user/all_user.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var users = result.data;
+									if(users != null)
+									{
+										for(var i=0; i<users.length; i++)
+										{
+											var user = users[i];
+											$("#mandator").append("<option value='"+user.id+"'>"+user.username+"</option>")
+										}
+									}
+								}else{
+									alert(result.msg);
+								}
+							}
+						})
+			}
+			
+			function doDetegateTask()
+			{
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+							url:url_prefix+"workflow/delegate_task.do",
+							dataType:"json",
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/activiti/needMeApprove.html");				
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#task_delegate_form").ajaxForm(options);
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>任务委托</h1>
+		
+		<hr />
+		
+		<form id="task_delegate_form" method="post">
+			<input id="taskId" name="taskId" type="hidden" />
+			申请人：	<span id="applicationName"></span><br />
+			业务类型：<span id="businesstype"></span><br />
+			业务内容：<span id="businessInfo"></span><br />
+			选择委托人：<select id="mandator" name="toUserId">
+	
+			</select><br />
+			<input type="submit" id="task_delegate" value="提交" />
+		</form>
+	</body>
+</html>

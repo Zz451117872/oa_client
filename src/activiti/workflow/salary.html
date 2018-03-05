@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var businesskey = $("#businesskey").val();
+				var taskId = $("#taskId").val();
+				
+				//业务key 与 任务id都 不为空，表示 重新申请
+				if(businesskey != null && taskId != null && businesskey != "" && taskId != "")
+				{
+					loadSalaryById(businesskey);
+					$(".is_reApply").show();
+					$("#slalry_form").attr("action",url_prefix+"salary/modify_salary.do");
+					$("#add_or_update_salary_workflow").click(addOrUpdateSalaryWorkflow);
+				//业务key 不为空，而 任务id为空，则表示 查看详细
+				}else if(businesskey != null && businesskey != "")
+				{
+					loadSalaryById(businesskey);
+					$(".is_reApply").hide();
+					$(".eor_viewDetail").hide();
+				//都为空，表示 申请
+				}else{
+					$(".is_reApply").hide();
+					$("#slalry_form").attr("action",url_prefix+"salary/start_salary_workflow.do");
+					$("#add_or_update_salary_workflow").click(addOrUpdateSalaryWorkflow);
+				}	
+			});
+			
+			function loadSalaryById(businesskey)
+			{
+					$.ajax({
+						url:url_prefix+"salary/get_salary_detail.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"salaryId":businesskey
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var salary = result.data;
+									if(salary != null)
+									{
+										fillSalaryToPage(salary);
+									}
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})	
+			}
+			
+			function fillSalaryToPage(salary)
+			{
+				$("#adjustmoney").val(salary.adjustmoney);
+				$("#description").val(salary.description);
+			
+				
+				var comments = salary.commentVOs;
+				if(comments != null)
+				{
+					for(var i=0; i<comments.length; i++)
+					{
+						var comment = comments[i];
+						var div = fillCommentToPage(comment);
+						$("#comments").append(div);
+					}
+				}
+			}
+			
+			function fillCommentToPage(comment)
+			{
+				var div = $("<div></div>");
+				var p = $("<p>评论人："+comment.userName+"</p>");
+				div.append(p);
+				
+				p = $("<p>评论内容："+comment.content+"</p>");
+				div.append(p);
+				
+				p = $("<p>评论时间："+comment.time+"</p>");
+				div.append(p);
+				
+				return div;
+			}
+			
+			function addOrUpdateSalaryWorkflow()
+			{
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/activiti/myApplication.html");
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#slalry_form").ajaxForm(options);
+			}
+		</script>
+	</head>
+	<body>
+		<h1>薪资调整流程</h1>
+		<input id="businesskey" type="hidden" name="businesskey" />
+		
+		<hr />
+		<form id="slalry_form" method="post" action="">
+			<input id="taskId" type="hidden" name="taskId" />
+			调整金额：<input type="text" id="adjustmoney" name="adjustmoney" /><br />
+			描述：<input type="text" id="description" name="description" /><br />
+			<hr />
+			<p class="is_reApply">审批：<select id="reApply" name="reApply">
+				<option value="true">同意</option>
+				<option value="false">不同意</option>
+			</select>
+			</p>
+			<p class="is_reApply">评论：<input  type="text" id="comment" name="comment" /><br /></p>
+			<p class="eor_viewDetail"><input id="add_or_update_salary_workflow" type="submit" value="提交" /><br /></p>
+		</form>
+		<hr />
+		<div id="comments">
+			
+		</div>
+		<hr />
+		
+	</body>
+</html>

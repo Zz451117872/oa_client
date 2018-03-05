@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>流程部署</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/activiti/deployPDF.js" ></script>
+	</head>
+	<body>
+		<hr />
+		<h1>流程部署</h1>
+		<hr />
+		<h2>选择本地文件部署</h2>
+		
+			选择部署文件：<input type="file" name="filename"  /><br />
+			<button id="deployPDF_zip">部署</button>
+		
+		<hr />
+		<h2>通过流程定义key部署</h2>
+		选择流程定义：<select id="processName">
+			
+		</select><br />
+		部署名：<input id="deploymentName" name="deploymentName" /><br />
+		<button id="deploy_PDF">部署</button>
+	</body>
+</html>

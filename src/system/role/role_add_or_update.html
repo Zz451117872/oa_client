@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>添加角色 或 修改角色</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){	
+
+				$("#role_add_or_update").click(addOrUpdateRole);
+				initializePage();
+			});
+			
+			function initializePage()
+			{
+				var id = $("#role_id").val();
+				if(id != null && id != "")
+				{
+					$("#is_update").show();		
+				}else{
+					$("#is_update").hide();
+				}
+			}
+			
+			function addOrUpdateRole()
+			{	
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+							url:url_prefix+"role/add_or_update_role.do",
+							dataType:"json",				
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("src/system/role/role_list.html");
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#add_or_update_role_form").ajaxForm(options);
+			}
+
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>添加角色 或 修改角色</h1>
+		<hr />
+		
+		<form id="add_or_update_role_form" method="post">
+		<p id="is_update">角色id：<input id="role_id" type="text" name="id" value="" /><br /></p>
+			角色名:<input id="roleName" type="text" name="roleName" /><br />
+			描述：<input id="description" type="text" name="description" /><br />	
+				<input id="role_add_or_update" type="submit" value="submit" />
+		</form>
+	</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+	
+				var businesskey = $("#businesskey").val();
+				var taskId = $("#taskId").val();
+				//业务key 与 任务id 都不为空时，表示是 重新申请 
+				if(businesskey != null && taskId != null && businesskey != "" && taskId != "")
+				{
+					loadLeaveById(businesskey);
+					$(".is_reApply").show();
+					$(".is_viewDetail").hide();
+					$("#leave_form").attr("action",url_prefix+"leave/modify_leave.do");
+					$("#add_or_update_leave_workflow").click(addOrUpdatreLeaveWorkflow);
+				//业务key 不为空，而任务id为空，则表示 查看业务详细
+				}else if(businesskey != null && businesskey != "")
+				{
+					loadLeaveById(businesskey);
+					$(".is_viewDetail").show();
+					$(".is_reApply").hide();
+					$(".is_apply").hide();
+					$(".eor_viewDetail").hide();
+				//业务key 与 任务Id都为空，表示 申请
+				}else{
+					$(".is_viewDetail").hide();
+					$(".is_reApply").hide();
+					$("#leave_form").attr("action",url_prefix+"leave/start_leave_workflow.do");
+					$("#add_or_update_leave_workflow").click(addOrUpdatreLeaveWorkflow);
+				}	
+			});
+			
+			function loadLeaveById(businesskey)
+			{
+					$.ajax({
+						url:url_prefix+"leave/get_leave_detail.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"leaveId":businesskey
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var leave = result.data;
+									if(leave != null)
+									{
+										fillLeaveToPage(leave);
+									}
+								}else{
+									alert(result.msg);
+								}
+							}
+						})	
+			}
+			
+			function fillLeaveToPage(leave)
+			{
+				$("#leaveType").val(leave.leaveType);
+				$("#leaveNumber").val(leave.leaveNumber);
+				$("#reason").val(leave.reason);
+				$("#startTime").val(leave.startTime);
+				$("#endTime").val(leave.endTime);
+				
+				var comments = leave.commentVOs;
+				if(comments != null)
+				{
+					for(var i=0; i<comments.length; i++)
+					{
+						var comment = comments[i];
+						var div = fillCommentToPage(comment);
+						$("#comments").append(div);
+					}
+				}
+			}
+			
+			function fillCommentToPage(comment)
+			{
+				var div = $("<div></div>");
+				var p = $("<p>评论人："+comment.userName+"</p>");
+				div.append(p);
+				
+				p = $("<p>评论内容："+comment.content+"</p>");
+				div.append(p);
+				
+				p = $("<p>评论时间："+comment.time+"</p>");
+				div.append(p);
+				
+				p = $("<hr />");
+				div.append(p);
+				return div;
+			}
+			
+			function addOrUpdatreLeaveWorkflow()
+			{
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/activiti/myApplication.html");
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#leave_form").ajaxForm(options);
+			}
+
+		</script>
+		
+	</head>
+	<body>
+		<h1>请假流程</h1>
+		<input id="businesskey" type="hidden" name="businesskey" />
+		
+		<hr />
+
+		<form id="leave_form" method="post" action="">
+			<input id="taskId" type="hidden" name="taskId" />
+			<p class="is_viewDetail"><span id="application"></span></p>
+			请假类型：<input type="text" id="leaveType" name="leaveType" /><br />
+			请假天数：<input type="text" id="leaveNumber" name="leaveNumber" /><br />
+			请假原因：<input type="text" id="reason" name="reason" /><br />
+			开始时间：<input type="date" id="startTime" name="startTime" /><br />
+			结束时间：<input type="date" id="endTime" name="endTime"  /><br />
+			<p class="is_viewDetail"><span id="status"></span></p>
+			<p class="is_reApply">审批：<select id="reApply" name="reApply">
+				<option value="true">同意</option>
+				<option value="false">不同意</option>				
+			</select>
+			</p>
+			<p class="is_reApply">评论：<input  type="text" id="comment" name="comment" /><br /></p>
+			<p class="eor_viewDetail"> <input  id="add_or_update_leave_workflow" type="submit" value="提交" /><br /></p>
+		</form>
+		<hr />
+		<div id="comments">
+			
+		</div>
+		<hr />
+		
+	</body>
+</html>

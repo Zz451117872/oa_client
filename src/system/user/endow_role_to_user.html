@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>用户角色管理</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var userId = $("#userId").val();
+				if(userId != null && userId != "")
+				{
+					loadRoleByUser(userId);
+				}	
+				
+				$("#endow_role_to_user").click(function(){
+					endowRoleToUser(userId);
+				});
+			});
+			
+			function endowRoleToUser(userId)
+			{
+				var roleIds = "";
+				$(".role").each(function(){
+					var checked = $(this).get(0).checked;
+					if(checked)
+					{
+						if(roleIds == "")
+						{
+							roleIds =$(this).attr("value");
+						}else{
+							roleIds = roleIds + "," + $(this).attr("value");
+						}		
+					}
+				});	
+				if(roleIds == "" || userId == "" || userId == null)
+				{
+					alert("未选择角色");
+					return;
+				}
+				
+					$.ajax({
+						url:url_prefix+"user/endow_role_to_user.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"userId":userId,
+								"roleIds":roleIds,
+								"reset":true
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/system/user/user_list.html");		
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+			
+			function loadRoleByUser(userId)
+			{
+					$.ajax({
+						url:url_prefix+"user/all_role_by_user.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"userId":userId
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var roles = result.data;
+									if(roles != null)
+									{
+										fillRolesToPage(roles);
+									}				
+								}else{
+									alert(result.msg);
+								}
+							}
+						})
+			}
+			
+			function fillRolesToPage(roles)
+			{
+				for(var i=0; i<roles.length; i++)
+				{
+					var role = roles[i];
+					var li = fillRoleToPage(role);
+					$("#roles").append(li);
+				}
+			}
+			
+			function fillRoleToPage(role)
+			{
+				var li = $("<li></li>");
+				var input = $("<input  type='checkbox' class='role' value='"+role.id+"' />");
+				if(role.checked)
+				{
+					$(input).attr("checked",true);
+				}else{
+					$(input).attr("checked",false);
+				}
+				var span = $("<span>"+role.roleName+"</span>");
+				li.append(input).append(span);
+				return li;
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>用户-角色</h1>
+		<hr />
+		用户||&nbsp;&nbsp;<span id="username">xxx</span>&nbsp;&nbsp;||角色分配：&nbsp;&nbsp;
+		<input id="userId" type="hidden" name="userId" value="" />
+		<button id="endow_role_to_user">授权角色</button>
+		<hr />
+		<ul id="roles">
+			
+		</ul>
+		
+	</body>
+</html>

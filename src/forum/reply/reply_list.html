@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>回复管理</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/common.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				loadAllReply(1,3);	
+			});
+			
+			function loadAllReply(pageNum,pageSize)
+			{
+					$.ajax({
+						url:url_prefix+"reply/all_reply.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"pageNum":pageNum,
+								"pageSize":pageSize
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var replys = result.data.list;
+									if(replys != null)
+									{
+										fillReplysToPage(replys);
+										
+										updateCommonData(result,loadAllReply);
+									}				
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+			
+			
+			function fillReplysToPage(replys)
+			{
+				$(".new_add").remove();
+				for(var i=0; i<replys.length; i++)
+				{
+					var reply = replys[i];
+					var div = fillReplyToPage(reply);
+					$("#replys").append(div);
+				}
+			}
+			
+			function fillReplyToPage(reply)
+			{
+				var div = $("<div class='new_add' id='"+reply.id+"' style='border: 1px solid black; padding: 20px; margin: 20px;'></div>")
+					
+				var p = $("<p>回复主题："+reply.topicTitle+"</p>");
+				 div.append(p);
+				 	 		 		 
+				var title = $("<p>回复标题：<a href='#'>"+reply.title+"</a></p>");
+				 
+				 $(title).on("click",function(){
+				 	$("#information").load("/OA_client/src/forum/reply/reply.html",function(){
+				 		$("#replyId").val(reply.id);
+				 	});	 	
+				 });
+				 div.append(title);
+				 
+				 p = $("<p>回复内容："+reply.content+"</p>");
+				 div.append(p);
+				 
+				 p = $("<p>回复时间："+reply.replayTime+"</p>");
+				 div.append(p);
+				 
+				 p = $("<p>回复人："+reply.authorName+"</p>");
+				 div.append(p);
+				 
+				 p = $("<p>状态："+reply.status+"</p>");
+				 div.append(p)
+				 
+				 p = $("<p>IP："+reply.ip+"</p>");
+				 div.append(p);
+				 
+				 p = $("<p></p>");
+				 var update = $("<button>修改 &nbsp;&nbsp;</button>");
+				 
+				 //绑定 修改回复   事件
+				 $(update).on("click",function(){
+				 	$("#information").load("/OA_client/src/forum/reply/reply_add_or_update.html",function(){
+				 		$("#replyId").val(reply.id);
+				 		$("#reply_title").val(reply.title);
+				 		$("#reply_content").val(reply.content);
+				 		$("#replyStatus").val(reply.statusName);
+				 		$("#reply_topicId").val(reply.topicId);
+				 	});
+				 });
+				 	
+				 p.append(update);	 
+				 div.append(p)
+				return div;
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>回复管理</h1>
+		<hr />
+		<div id="replys">
+			
+		</div>
+		<iframe id="pageIframeId" name="pageIframe" src="/OA_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
+	</body>
+</html>

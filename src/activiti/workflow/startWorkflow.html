@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>流程启动</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var pdfKEY = $("#processDefinitionKEY").val();
+				if("leave"==pdfKEY)
+				{
+					$("#toStartWorkflow").load("/OA_client/src/activiti/workflow/leave.html");
+				}else if("salaryAdjuct"==pdfKEY)
+				{
+					$("#toStartWorkflow").load("/OA_client/src/activiti/workflow/salary.html");
+				}else{
+					alert("启动已完成");
+					$("#information").load("/OA_client/src/activiti/allPDF.html");
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<hr />
+		<input id="processDefinitionKEY" type="hidden" name="processDefinitionKEY" />
+		<hr />
+		<div id="toStartWorkflow">
+			
+		</div>
+	</body>
+</html>

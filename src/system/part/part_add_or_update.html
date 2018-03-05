@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>添加部门或部门修改</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){	
+
+				$("#part_add_or_update").click(addOrUpdatePart);
+				initializePage();
+			});
+			
+			function initializePage()
+			{
+				var id = $("#part_id").val();
+				if(id != null && id != "")
+				{
+					$("#is_update").show();		
+				}else{
+					$("#is_update").hide();
+				}
+			}
+			
+			function addOrUpdatePart()
+			{	
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+							url:url_prefix+"part/add_or_update_part.do",
+							dataType:"json",
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("src/system/part/part_list.html");
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#add_or_update_part_form").ajaxForm(options);
+			}
+
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>添加部门 ||修改部门</h1>
+		<hr />
+		
+		<form id="add_or_update_part_form" method="post">
+		<p id="is_update">角色id：<input id="part_id" type="text" name="id" value="" /><br /></p>
+			部门名:<input id="partName" type="text" name="partName" /><br />
+			描述：<input id="description" type="text" name="description" /><br />	
+				<input id="part_add_or_update" type="submit" value="submit" />
+		</form>
+	</body>
+</html>

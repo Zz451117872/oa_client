@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>添加用户或者更新用户</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" >
+			$(document).ready(function(){	
+				loadAllPart();
+				
+				$("#add_or_update_user").click(addOrUpdateUser);
+				initializePage();
+			});
+			
+			function loadAllPart()
+			{
+					$.ajax({
+						url:url_prefix+"part/all_part.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"pageNum":1,
+								"pageSize":0					
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var parts = result.data.list;
+									if(parts != null)
+									{
+										var currentPart = $("#part_name").val();
+										for(var i=0; i<parts.length; i++)
+										{
+											var part = parts[i];
+											if(part.partName == currentPart)
+											{
+												$("#partId").append("<option selected='selected' value='"+part.id+"'>"+part.partName+"</option>");
+											}else{
+												$("#partId").append("<option value='"+part.id+"'>"+part.partName+"</option>")
+											}
+											
+										}
+									}
+								}else{
+									alert(result.msg);
+								}
+							}
+						})
+			}
+			
+			function initializePage()
+			{
+				var id = $("#user_id").val();
+				if(id != null && id != "")
+				{
+					$("#is_update").show();
+					$("#is_add").hide();
+				}else{
+					$("#is_update").show();
+					$("#is_update").hide();
+				}
+			}
+			
+			function addOrUpdateUser()
+			{		
+				var options = {
+						url:url_prefix+"user/add_or_update_user.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},				
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",				
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("src/system/user/user_list.html");
+								}else{
+									alert(result.msg);
+								}
+							}
+						};
+					$("#add_or_update_user_form").ajaxForm(options);
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>添加用户或者更新用户</h1>
+		<input id="part_name" name="partName" type="hidden" />
+		<hr />
+		
+		<form id="add_or_update_user_form" method="post" action="">
+			<p id="is_update">用户id：<input id="user_id" type="text" name="id" value="" /><br /></p>
+			用户名：<input id="username" type="text" name="username" /><br />
+			<p id="is_add">密码：<input id="password" type="text" name="password" /><br /></p>
+			部门：<select id="partId"name="partId">
+				
+			</select><br />
+			薪水：<input id="salary" type="text" name="salary" /><br />
+			<input id="add_or_update_user" type="submit" value="submit" />
+		</form>
+	</body>
+</html>

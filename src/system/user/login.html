@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>登陆</title>
+		<script type="text/javascript" src="../../../js/module/jquery.js" ></script>		
+		<script type="text/javascript" src="../../../js/module/jquery.cookie.js" ></script>
+		<script type="text/javascript" src="../../../js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="../../../js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+	
+				$("#login").click(login);
+			});
+			
+			function login()
+			{	
+				var options = {
+						headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+						url: url_prefix+"user/login.do",
+						type:"POST",
+						xhrFields:{
+								withCredentials:true
+							},
+						dataType:"json",		
+						success:function(result){
+								if(result.status)
+								{		
+									$.cookie("username",result.data,{'expires':1,'path':'/OA_client'});
+									window.location.href = "../../../index.html";			
+								}else{
+									alert(result.msg);
+									window.location.reload(true);
+								}
+							}
+						}
+					$("#login_form").ajaxForm(options);
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>用户登陆</h1>
+		<hr />
+		
+		<form id="login_form" method="post">
+			用户名：<input id="username" type="text" name="username" /><br />
+			密码：<input id="password" type="text" name="password" /><br />
+			<input id="login" type="submit" value="submit" />
+		</form>
+	</body>
+</html>

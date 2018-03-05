@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>完成任务</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#task_complete").click(doCompleteTask);
+			});
+						
+			function doCompleteTask()
+			{
+				var options = {
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							xhrFields:{
+								withCredentials:true
+							},
+							url:url_prefix+"workflow/complete_task.do",
+							dataType:"json",
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/activiti/needMeApprove.html");	
+								}else{
+									alert(result.msg);
+								}
+							}
+						}
+				$("#task_complete_form").ajaxForm(options);
+			}
+
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>完成任务</h1>
+		
+		<hr />
+		<div>
+			
+			<form id="task_complete_form" method="post">
+				<input id="taskId" type="hidden" name="taskId" />
+				申请人：	<span id="applicationName"></span><br />
+				业务类型：<span id="businesstype"></span><br />
+				业务内容：<span id="businessInfo"></span><br />
+				评语：<input type="text" id="comment" name="comment"/><br />
+				是否通过：<select id="isPass" name="isPass">
+					<option value="true">通过</option>
+					<option value="false">拒绝</option>
+				</select><br />
+				<input type="submit" id="task_complete" value="提交" />
+			</form>
+		</div>
+	</body>
+</html>

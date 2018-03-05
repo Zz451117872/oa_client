@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>角色权限管理</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/page.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" >
+			$(document).ready(function(){
+				var roleId = $("#roleId").val();
+				if(roleId != null && roleId != "")
+				{
+					loadPrivilegeByRole(roleId);
+				}	
+				
+				$("#endow_privilege_to_role").click(function(){
+					endowPrivilegeToRole(roleId);
+				});
+			});
+			
+			function endowPrivilegeToRole(roleId)
+			{
+				var privilegeIds = "";
+				$(".privilege").each(function(){
+					var checked = $(this).get(0).checked;
+					if(checked)
+					{
+						if(privilegeIds == "")
+						{
+							privilegeIds =$(this).attr("value");
+						}else{
+							privilegeIds = privilegeIds + "," + $(this).attr("value");
+						}		
+					}
+				});		
+				
+					$.ajax({
+						url:url_prefix+"role/endow_privilege_to_role.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"roleId":roleId,
+								"privilegeIds":privilegeIds,
+								"reset":true
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									$("#information").load("/OA_client/src/system/role/role_list.html");		
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+			
+			function loadPrivilegeByRole(roleId)
+			{
+					$.ajax({
+						url:url_prefix+"role/all_privilege_by_role.do",
+							headers:{
+								"Access-Control-Allow-Credentials":"true"
+							},
+							type:"POST",
+							xhrFields:{
+								withCredentials:true
+							},
+							dataType:"json",
+							data:{
+								"roleId":roleId
+							},
+							success:function(result){
+								if(result.status)
+								{		
+									var privileges = result.data;
+									if(privileges != null)
+									{
+										fillPrivilegesToPage(privileges);
+									}				
+								}else{
+									alert(result.msg);
+								}
+							},
+							error:function(){
+								alert("xxx");
+							}
+						})
+			}
+			
+			function fillPrivilegesToPage(privileges)
+			{
+				for(var i=0; i<privileges.length; i++)
+				{
+					var privilege = privileges[i];
+					var li = fillPrivilegeToPage(privilege,1);
+					$("#privileges").append(li);		
+				}
+			}
+			
+			function fillPrivilegeToPage(privilege,len)
+			{
+				var li = $("<li></li>");
+				for(var i=0; i<len; i++)
+				{
+					li.append("<span> &nbsp;&nbsp;</span>");
+				}
+				var input = $("<input  type='checkbox' class='privilege' value='"+privilege.id+"' />");
+				if(privilege.checked)
+				{
+					$(input).attr("checked",true);
+				}else{
+					$(input).attr("checked",false);
+				}
+				var span = $("<span>"+privilege.privilegeName+"</span>");
+				li.append(input).append(span);
+				
+				var childs = privilege.childs;
+				if(childs != null && childs != "")
+				{
+					var ul = $("<ul></ul>");
+					for(var i=0; i<childs.length; i++)
+					{
+						var child = fillPrivilegeToPage(childs[i],len+2);
+						ul.append(child);
+					}
+					li.append(ul);
+				}
+				return li;
+			}
+		</script>
+	</head>
+	<body>
+		<hr />
+		<h1>角色权限管理</h1>
+		<hr />
+		角色||&nbsp;&nbsp;<span id="roleName">xxx</span>&nbsp;&nbsp;||权限分配：&nbsp;&nbsp;
+		<input id="roleId" type="hidden" name="roleId" value="" />
+		<button id="endow_privilege_to_role">授权权限</button>
+		<hr />
+		<ul id="privileges">
+			
+		</ul>
+		
+	</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>版块信息</title>
+		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/common.js" ></script>
+		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+			var forumId = $("#forumId").val();
+			
+			if(forumId != null && forumId != "")
+			{
+				loadTopicsByForum(1,3);
+			}
+			
+			//绑定 查看该版块最后回复 事件
+			$("#lastTopic").click(function(){
+				var topicId = $("#lastTopic").text();
+				$("#information").load("/OA_client/src/forum/topic/topic.html",function(){
+					$("#topicId").val(topicId);
+				});
+			});
+		});
+		
+		
+		function loadTopicsByForum(pageNum,pageSize)
+		{
+			var forumId = $("#forumId").val();
+					$.ajax({
+					url:url_prefix+"topic/get_topic_by_forum.do",
+						headers:{
+							"Access-Control-Allow-Credentials":"true"
+						},
+						type:"POST",
+						xhrFields:{
+							withCredentials:true
+						},
+						dataType:"json",
+						data:{
+							"forumId":forumId,
+							"pageNum":pageNum,
+							"pageSize":pageSize
+						},
+						success:function(result){
+							if(result.status)
+							{		
+								var topics = result.data.list;
+								if(topics != null)
+								{
+									fillTopicsToPage(topics);
+									
+									updateCommonData(result,loadTopicsByForum);
+								}				
+							}else{
+								alert(result.msg);
+							}
+						}
+					})
+		}
+		
+		function fillTopicsToPage(topics)
+		{			
+				if(topics != null)
+				{			
+					$(".new_add").remove();
+					for(var i=0; i<topics.length; i++)
+					{
+						var div = fillTopicToPage(topics[i]);
+						$("#topics").append(div);
+					}
+					
+				}
+		
+		}
+		
+		function fillTopicToPage(topic)
+		{
+			var div = $("<div class='new_add' id='"+topic.id+"' style='border: 1px solid black; padding: 10px;'></div>");
+			var p = $("<p>楼主："+topic.authorName+"</p>");
+			div.append(p);
+			
+			p = $("<p>ip："+topic.ip+"</p>");
+			div.append(p);
+			
+			p = $("<p>回复数："+topic.replyCount+"</p>");
+			div.append(p);
+			
+			p = $("<p>发贴时间："+topic.createTime+"</p>");
+			div.append(p);
+		
+			
+			var title = $("<p>标题：<a href='#'>"+topic.title+"</a></p>");
+			
+			//绑定 按主题标题查看主题详细 事件
+			$(title).on("click",function(){
+			 	$("#information").load("/OA_client/src/forum/topic/topic.html",function(){
+			 		$("#topicId").val(topic.id);	 		
+			 	});	 	
+			 });
+			div.append(title);
+			
+			p = $("<p>帖子内容："+topic.content+"</p>");
+			div.append(p);
+			
+			return div;
+		}
+		</script>
+	</head>
+	<body>	
+		<hr />
+		<h1>版块信息</h1>
+		<hr />
+		版块：<span id="forumName">yyy</span><br />
+		描述：<span id="description">xxx</span><br />
+		主题数：<span id="topCount">xxx</span><br />
+		回复数：<span id="replyCount">xxx</span><br />
+		创建时间：<span id="createTime">xxx</span><br />
+		最后主题：<span><a id="lastTopic"  href="#">xx</a></span><br />
+		<input id="forumId" name="forumId" value="" type="hidden" />
+		<hr />
+		<div id="topics">
+			
+		</div>
+		<iframe id="pageIframeId" name="pageIframe" src="/OA_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
+	</body>
+</html>
