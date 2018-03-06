@@ -85,7 +85,7 @@ function fillBaseVOToPage(baseVO)
 	var viewDetail = $("<a href='#'>查看详细 <br></a>");
 			
 	$(viewDetail).on("click",function(){
-		$("#information").load("/OA_client/src/activiti/workflow/"+baseVO.businesstype+".html",function(){
+		$("#information").load("/oa_client/src/activiti/workflow/"+baseVO.businesstype+".html",function(){
 			$("#businesskey").val(baseVO.businesskey);
 		});		
 	});
@@ -100,7 +100,7 @@ function fillBaseVOToPage(baseVO)
 	}else if(baseVO.approver == baseVO.applicationName){
 		var toRepeatApply = $("<a href='#'>重新申请<br> </a>");
 		$(toRepeatApply).on("click",function(){
-			$("#information").load("/OA_client/src/activiti/workflow/"+baseVO.businesstype+".html",function(){
+			$("#information").load("/oa_client/src/activiti/workflow/"+baseVO.businesstype+".html",function(){
 				$("#taskId").val(baseVO.taskId);
 				$("#businesskey").val(baseVO.businesskey);			
 			});
@@ -110,7 +110,7 @@ function fillBaseVOToPage(baseVO)
 		var toComplete = $("<a href='#'>完成<br> </a>");
 		$(toComplete).on("click",function(){
 			
-			$("#information").load("/OA_client/src/activiti/task/taskComplete.html",function(){
+			$("#information").load("/oa_client/src/activiti/task/taskComplete.html",function(){
 				$("#taskId").val(baseVO.taskId);
 				$("#businesstype").text(baseVO.businesstype);
 				$("#applicationName").text(baseVO.applicationName);
@@ -120,7 +120,7 @@ function fillBaseVOToPage(baseVO)
 		
 		var toDelegate = $("<a href='#'>委托 <br></a>");
 		$(toDelegate).on("click",function(){
-			$("#information").load("/OA_client/src/activiti/task/taskDetegate.html",function(){
+			$("#information").load("/oa_client/src/activiti/task/taskDetegate.html",function(){
 				$("#taskId").val(baseVO.taskId);
 				$("#businesstype").text(baseVO.businesstype);
 				$("#applicationName").text(baseVO.applicationName);
@@ -130,7 +130,7 @@ function fillBaseVOToPage(baseVO)
 		
 		var toTransfer = $("<a href='#'>转办 </a>");
 		$(toTransfer).on("click",function(){
-			$("#information").load("/OA_client/src/activiti/task/taskTransfer.html",function(){
+			$("#information").load("/oa_client/src/activiti/task/taskTransfer.html",function(){
 				$("#taskId").val(baseVO.taskId);
 				$("#businesstype").text(baseVO.businesstype);
 				$("#applicationName").text(baseVO.applicationName);
@@ -164,7 +164,7 @@ function claimTask(taskId)
 				success:function(result){
 					if(result.status)
 					{		
-						$("#information").load("/OA_client/src/activiti/needMeApprove.html");	
+						$("#information").load("/oa_client/src/activiti/needMeApprove.html");	
 					}else{
 						alert(result.msg);
 					}

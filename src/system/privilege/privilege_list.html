@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>权限信息页面</title>
-		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/oa.js" ></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 	
@@ -17,7 +17,7 @@
 				}
 				
 				$("#add_privilege").on("click",function(){
-					$("#information").load("/OA_client/src/system/privilege/privilege_add_or_update.html");
+					$("#information").load("/oa_client/src/system/privilege/privilege_add_or_update.html");
 				});
 			});
 			
@@ -104,7 +104,7 @@
 				
 				//绑定 查询子权限 事件
 				$(privilegeName).on("click",function(){
-					$("#information").load("/OA_client/src/system/privilege/privilege_list.html",function(){
+					$("#information").load("/oa_client/src/system/privilege/privilege_list.html",function(){
 						$("#parentId").val(privilege.id);
 					});
 				});
@@ -125,7 +125,7 @@
 				
 				//绑定更新权限事件
 				$(update).on("click",function(){
-					$("#information").load("/OA_client/src/system/privilege/privilege_add_or_update.html",function(){
+					$("#information").load("/oa_client/src/system/privilege/privilege_add_or_update.html",function(){
 						
 						$("#privilege_id").val(privilege.id);
 						$("#privilegeName").val(privilege.privilegeName);
@@ -163,7 +163,7 @@
 							success:function(result){
 								if(result.status)
 								{		
-									$("#information").load("/OA_client/src/system/privilege/privilege_list.html");				
+									$("#information").load("/oa_client/src/system/privilege/privilege_list.html");				
 								}else{
 									alert(result.msg);
 								}

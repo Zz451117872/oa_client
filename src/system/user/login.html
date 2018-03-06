@@ -16,9 +16,9 @@
 			function login()
 			{	
 				var options = {
-						headers:{
-								"Access-Control-Allow-Credentials":"true"
-							},
+//						headers:{
+//								"Access-Control-Allow-Credentials":"true"
+//							},
 						url: url_prefix+"user/login.do",
 						type:"POST",
 						xhrFields:{
@@ -28,7 +28,7 @@
 						success:function(result){
 								if(result.status)
 								{		
-									$.cookie("username",result.data,{'expires':1,'path':'/OA_client'});
+									$.cookie("username",result.data,{'expires':1,'path':'/oa_client'});
 									window.location.href = "../../../index.html";			
 								}else{
 									alert(result.msg);

@@ -3,9 +3,9 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>编辑用户任务</title>
-		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/oa.js" ></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$("#edit_user_task").click(doEditUserTask);
@@ -26,7 +26,7 @@
 							success:function(result){
 								if(result.status)
 								{		
-									$("#information").load("/OA_client/src/activiti/user_task/user_task.html",function(){
+									$("#information").load("/oa_client/src/activiti/user_task/user_task.html",function(){
 										$("#pdf_key").val(procdefkey);
 									});
 								}else{

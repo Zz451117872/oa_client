@@ -3,9 +3,9 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>任务委托</title>
-		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/jquery.form.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/jquery.form.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/oa.js" ></script>
 		<script type="text/javascript" >
 			$(document).ready(function(){
 				loadMandator();
@@ -59,7 +59,7 @@
 							success:function(result){
 								if(result.status)
 								{		
-									$("#information").load("/OA_client/src/activiti/needMeApprove.html");				
+									$("#information").load("/oa_client/src/activiti/needMeApprove.html");				
 								}else{
 									alert(result.msg);
 								}

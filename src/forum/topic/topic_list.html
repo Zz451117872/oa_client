@@ -3,9 +3,9 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>论坛-主题</title>
-		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/common.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/common.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/oa.js" ></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				loadAllTopic(1,3);	
@@ -68,7 +68,7 @@
 				
 				var title = $("<p>主题标题：<a href='#'>"+topic.title+"</a></p>");	 
 				$(title).on("click",function(){
-				 	$("#information").load("/OA_client/src/forum/topic/topic.html",function(){
+				 	$("#information").load("/oa_client/src/forum/topic/topic.html",function(){
 				 		$("#topicId").val(topic.id); 		
 				 	});	 	
 				 });
@@ -91,7 +91,7 @@
 				 
 				 var lastReply = $("<p>最后回复：<a href='#'>"+topic.lastReply+"</a></p>");	 
 				 $(lastReply).on("click",function(){
-				 	$("#information").load("/OA_client/src/forum/reply/reply.html",function(){
+				 	$("#information").load("/oa_client/src/forum/reply/reply.html",function(){
 				 		$("#replyId").val(topic.lastReply);	 		
 				 	});	 	
 				 });
@@ -103,7 +103,7 @@
 				 var deletes = $("<button>删除 &nbsp;&nbsp;</button>");
 				 
 				 $(update).on("click",function(){
-				 	$("#information").load("/OA_client/src/forum/topic/topic_add_or_update.html",function(){
+				 	$("#information").load("/oa_client/src/forum/topic/topic_add_or_update.html",function(){
 				 		$("#topicId").val(topic.id);
 				 		$("#title").val(topic.title);
 				 		$("#content").val(topic.content);
@@ -142,7 +142,7 @@
 							success:function(result){
 								if(result.status)
 								{		
-									$("#information").load("/OA_client/src/forum/topic/topic_list.html");			
+									$("#information").load("/oa_client/src/forum/topic/topic_list.html");			
 								}else{
 									alert(result.msg);
 								}
@@ -161,6 +161,6 @@
 		<div id="topics">
 			
 		</div>
-		<iframe id="pageIframeId" name="pageIframe" src="/OA_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
+		<iframe id="pageIframeId" name="pageIframe" src="/oa_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
 	</body>
 </html>

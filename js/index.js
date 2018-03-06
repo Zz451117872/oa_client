@@ -63,7 +63,7 @@ $(document).ready(function(){
 	
 	$("#logout").on("click",function(){
 		//window.location.reload();
-		$.cookie("username","x",{'expires':-10,'path':'/OA_client'});
+		$.cookie("username","x",{'expires':-10,'path':'/oa_client'});
 		logout();		
 		refreshHomepage();
 	});

@@ -95,7 +95,7 @@ function fillBaseVOToPage(baseVO)
 	
 	//绑定 查看业务详细 事件
 	$(viewDetail).on("click",function(){
-		$("#information").load("/OA_client/src/activiti/workflow/"+baseVO.businesstype+".html",function(){
+		$("#information").load("/oa_client/src/activiti/workflow/"+baseVO.businesstype+".html",function(){
 			$("#businesskey").val(baseVO.businesskey);
 		});		
 	});

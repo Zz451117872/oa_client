@@ -24,7 +24,7 @@ function doDeployPDF_ZIP()
                  processData: false,
                  cache: false,
                  success: function(result) {
-                     $("#information").load("/OA_client/src/activiti/allPDF.html");
+                     $("#information").load("/oa_client/src/activiti/allPDF.html");
                  },
                  error: function () {
                      alert("faild");
@@ -54,7 +54,7 @@ function doDeployPDF()
 				success:function(result){
 					if(result.status)
 					{		
-						$("#information").load("/OA_client/src/activiti/allPDF.html");
+						$("#information").load("/oa_client/src/activiti/allPDF.html");
 					}else{
 						alert(result.msg);
 					}

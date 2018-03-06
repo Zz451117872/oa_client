@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>用户角色管理</title>
-		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/oa.js" ></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				var userId = $("#userId").val();
@@ -57,7 +57,7 @@
 							success:function(result){
 								if(result.status)
 								{		
-									$("#information").load("/OA_client/src/system/user/user_list.html");		
+									$("#information").load("/oa_client/src/system/user/user_list.html");		
 								}else{
 									alert(result.msg);
 								}

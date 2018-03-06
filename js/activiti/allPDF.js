@@ -2,7 +2,7 @@ $(document).ready(function(){
 	loadAllPDF(1,3);
 	
 	$("#deployWorkflow").click(function(){
-		$("#information").load("/OA_client/src/activiti/deployPDF.html");
+		$("#information").load("/oa_client/src/activiti/deployPDF.html");
 	});
 	$("#deployAllWorkflow").click(doDeployAllWorkflow);
 	$("#deleteAllWorkflow").click(doDeleteAllWorkflow);
@@ -27,7 +27,7 @@ function doDeployAllWorkflow()
 				success:function(result){
 					if(result.status)
 					{		
-						$("#information").load("/OA_client/src/activiti/allPDF.html");
+						$("#information").load("/oa_client/src/activiti/allPDF.html");
 					}else{
 						alert(result.msg);
 					}
@@ -55,7 +55,7 @@ function doDeleteAllWorkflow()
 				success:function(result){
 					if(result.status)
 					{		
-						$("#information").load("/OA_client/src/activiti/allPDF.html");
+						$("#information").load("/oa_client/src/activiti/allPDF.html");
 					}else{
 						alert(result.msg);
 					}
@@ -148,7 +148,7 @@ function fillPDFToPage(PDF)
 	
 	
 	$(startWorkflow).on("click",function(){
-		$("#information").load("/OA_client/src/activiti/workflow/startWorkflow.html",function(){
+		$("#information").load("/oa_client/src/activiti/workflow/startWorkflow.html",function(){
 			$("#processDefinitionKEY").val(PDF.key);
 		});
 	});
@@ -166,7 +166,7 @@ function fillPDFToPage(PDF)
 	});
 	
 	$(editUserTask).on("click",function(){
-		$("#information").load("/OA_client/src/activiti/user_task/user_task.html",function(){
+		$("#information").load("/oa_client/src/activiti/user_task/user_task.html",function(){
 			$("#pdf_key").val(PDF.key);		
 		});
 	});
@@ -195,7 +195,7 @@ function deletePDF(processDefinitionId)
 				success:function(result){
 					if(result.status)
 					{		
-						$("#information").load("/OA_client/src/activiti/allPDF.html");
+						$("#information").load("/oa_client/src/activiti/allPDF.html");
 					}else{
 						alert(result.msg);
 					}
@@ -254,7 +254,7 @@ function doInitUserTask(processDefinitionId)
 				success:function(result){
 					if(result.status)
 					{								
-						$("#information").load("/OA_client/src/activiti/allPDF.html");
+						$("#information").load("/oa_client/src/activiti/allPDF.html");
 					}else{
 						alert(result.msg);
 					}
@@ -282,7 +282,7 @@ function doInitAllUserTask()
 				success:function(result){
 					if(result.status)
 					{								
-						$("#information").load("/OA_client/src/activiti/allPDF.html");
+						$("#information").load("/oa_client/src/activiti/allPDF.html");
 					}else{
 						alert(result.msg);
 					}

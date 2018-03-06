@@ -3,9 +3,9 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>用户任务管理</title>
-		<script type="text/javascript" src="/OA_client/js/module/jquery.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/common.js" ></script>
-		<script type="text/javascript" src="/OA_client/js/module/oa.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/jquery.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/common.js" ></script>
+		<script type="text/javascript" src="/oa_client/js/module/oa.js" ></script>
 		<script type="text/javascript">
 			$(document).ready(function(){		
 				loadAllPdfKey();		
@@ -149,7 +149,7 @@
 				
 				var edit = $("<a href='#'>编辑<br></a>");
 				$(edit).on("click",function(){
-					$("#information").load("/OA_client/src/activiti/user_task/edit_user_task.html",function(){
+					$("#information").load("/oa_client/src/activiti/user_task/edit_user_task.html",function(){
 						$("#userTaskId").val(userTask.id);
 						$("#procdefkey").val(userTask.procdefkey);
 						$("#taskdefkey").val(userTask.taskdefkey);
@@ -188,6 +188,6 @@
 				<td>operation</td>
 			</tr>
 		</table>
-		<iframe id="pageIframeId" name="pageIframe" src="/OA_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
+		<iframe id="pageIframeId" name="pageIframe" src="/oa_client/src/common/page.html" scrolling="no" width="100%" height="40px" frameborder="0"></iframe>
 	</body>
 </html>
